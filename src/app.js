@@ -9,6 +9,12 @@ app.use(routes);
 
 const PORT = process.env.PORT || 3000;
 
+db.sync({ alter: true })
+  .then(() => {
+    console.log('🟢 Banco sincronizado');
+    app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
+  });
+
 db.sync().then(() => {
   console.log('🟢 Banco sincronizado');
   app.listen(PORT, () => {

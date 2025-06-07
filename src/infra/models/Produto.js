@@ -1,32 +1,23 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database');
-const Categoria = require('./Categoria');
+module.exports = (sequelize, DataTypes) => {
+  const Produto = sequelize.define('Produto', {
+    nome: DataTypes.STRING,
+    preco: DataTypes.FLOAT,
+    id_categoria: DataTypes.INTEGER,
+  }, {
+    tableName: 'produtos'
+  });
 
-const Produto = sequelize.define('Produto', {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
-  },
-  id_categoria: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  nome: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  foto: DataTypes.STRING,
-  volume: DataTypes.DOUBLE,
-  valor: DataTypes.DOUBLE
-}, {
-  tableName: 'produtos',
-  timestamps: false
-});
+  Produto.associate = (models) => {
+    Produto.belongsTo(models.Categoria, {
+      foreignKey: 'id_categoria',
+      as: 'categoria'
+    });
 
-Produto.belongsTo(Categoria, {
-  foreignKey: 'id_categoria',
-  as: 'categoria'
-});
+    Produto.hasMany(models.ItemPedido, {
+      foreignKey: 'id_produto',
+      as: 'itens'
+    });
+  };
 
-module.exports = Produto;
+  return Produto;
+};

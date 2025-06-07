@@ -1,5 +1,26 @@
 const express = require('express');
 const router = express.Router();
+const { Pedido, ItemPedido } = require('../infra/models');
+
+
+//Usuario
+
+const Usuario = require('../infra/models/Usuario');
+const UsuarioRepository = require('../repositories/UsuarioRepository');
+const UsuarioService = require('../services/UsuarioService');
+const UsuarioControllerFactory = require('../controllers/UsuarioController');
+
+const usuarioRepo = new UsuarioRepository(Usuario);
+const usuarioService = new UsuarioService(usuarioRepo);
+const usuarioController = UsuarioControllerFactory(usuarioService);
+
+router.get('/usuarios', usuarioController.listar);
+router.post('/usuarios', usuarioController.criar);
+router.get('/usuarios/:id', usuarioController.buscarPorId);
+router.put('/usuarios/:id', usuarioController.atualizar);
+router.delete('/usuarios/:id', usuarioController.excluir);
+
+
 
 //Produto
 const Produto = require('../infra/models/Produto');
@@ -51,6 +72,38 @@ router.post('/adicionais', adicionalController.criar);
 router.put('/adicionais/:id', adicionalController.atualizar);
 router.delete('/adicionais/:id', adicionalController.excluir);
 
+
+// Pedido
+const PedidoRepository = require('../repositories/PedidoRepository');
+const PedidoService = require('../services/PedidoService');
+const PedidoControllerFactory = require('../controllers/PedidoController');
+
+const pedidoRepo = new PedidoRepository(Pedido, ItemPedido);
+const pedidoService = new PedidoService(pedidoRepo);
+const pedidoController = PedidoControllerFactory(pedidoService);
+
+router.get('/pedidos', pedidoController.listar);
+router.get('/pedidos/:id', pedidoController.buscarPorId);
+router.post('/pedidos', pedidoController.criar);
+router.put('/pedidos/:id', pedidoController.atualizar);
+router.delete('/pedidos/:id', pedidoController.deletar);
+
+
+//Permissões
+const { Permissao } = require('../infra/models');
+const PermissaoRepository = require('../repositories/PermissaoRepository');
+const PermissaoService = require('../services/PermissaoService');
+const PermissaoControllerFactory = require('../controllers/PermissaoController');
+
+const permissaoRepo = new PermissaoRepository(Permissao);
+const permissaoService = new PermissaoService(permissaoRepo);
+const permissaoController = PermissaoControllerFactory(permissaoService);
+
+router.get('/permissoes', permissaoController.listar);
+router.post('/permissoes', permissaoController.criar);
+router.get('/permissoes/:id', permissaoController.buscarPorId);
+router.put('/permissoes/:id', permissaoController.atualizar);
+router.delete('/permissoes/:id', permissaoController.excluir);
 
 console.log('Rotas registradas:');
 router.stack.forEach((r) => {

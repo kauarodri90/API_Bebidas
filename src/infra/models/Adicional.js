@@ -1,32 +1,12 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database');
-const Produto = require('./Produto');
+module.exports = (sequelize, DataTypes) => {
+  const Adicional = sequelize.define('Adicional', {
+    nome: DataTypes.STRING,
+    preco: DataTypes.FLOAT,
+  }, {
+    tableName: 'adicionais'
+  });
 
-const Adicional = sequelize.define('Adicional', {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
-  },
-  id_produto: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  nome: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  descricao: DataTypes.STRING,
-  foto: DataTypes.STRING,
-  quantidade: DataTypes.INTEGER
-}, {
-  tableName: 'adicionais',
-  timestamps: false
-});
+  Adicional.associate = () => {};
 
-Adicional.belongsTo(Produto, {
-  foreignKey: 'id_produto',
-  as: 'produto'
-});
-
-module.exports = Adicional;
+  return Adicional;
+};
