@@ -1,116 +1,112 @@
 const express = require('express');
 const router = express.Router();
-const { Pedido, ItemPedido } = require('../infra/models');
+const models = require('../infra/models');
+const { Pedido, ItemPedido, Usuario, Produto, Categoria, Adicional, Permissao, Pagamento } = models;
 
+const auth = require('../middlewares/auth');
 
-//Usuario
+// ---------- Auth ----------
+const AuthController = require('../controllers/AuthController');
+const authController = AuthController(Usuario);
+router.post('/login', authController.login);
 
-const Usuario = require('../infra/models/Usuario');
+// ---------- Usuário ----------
 const UsuarioRepository = require('../repositories/UsuarioRepository');
 const UsuarioService = require('../services/UsuarioService');
 const UsuarioControllerFactory = require('../controllers/UsuarioController');
+const usuarioController = UsuarioControllerFactory(new UsuarioService(new UsuarioRepository(Usuario)));
 
-const usuarioRepo = new UsuarioRepository(Usuario);
-const usuarioService = new UsuarioService(usuarioRepo);
-const usuarioController = UsuarioControllerFactory(usuarioService);
+router.get('/usuarios', auth, usuarioController.listar);
+router.post('/usuarios', usuarioController.criar); // Registro aberto
 
-router.get('/usuarios', usuarioController.listar);
-router.post('/usuarios', usuarioController.criar);
-router.get('/usuarios/:id', usuarioController.buscarPorId);
-router.put('/usuarios/:id', usuarioController.atualizar);
-router.delete('/usuarios/:id', usuarioController.excluir);
-
-
-
-//Produto
-const Produto = require('../infra/models/Produto');
+// ---------- Produto ----------
 const ProdutoRepository = require('../repositories/ProdutoRepository.js');
 const ProdutoService = require('../services/ProdutoService');
 const ProdutoControllerFactory = require('../controllers/ProdutoController');
-
-const produtoRepo = new ProdutoRepository(Produto);
-const produtoService = new ProdutoService(produtoRepo);
-const produtoController = ProdutoControllerFactory(produtoService);
+const produtoController = ProdutoControllerFactory(new ProdutoService(new ProdutoRepository(Produto)));
 
 router.get('/produtos', produtoController.listarTodos);
-router.post('/produtos', produtoController.criar);
+router.post('/produtos', auth, produtoController.criar); // protegida
 router.get('/produtos/:id', produtoController.buscarPorId);
-router.put('/produtos/:id', produtoController.atualizar);
-router.delete('/produtos/:id', produtoController.excluir);
+router.put('/produtos/:id', auth, produtoController.atualizar);
+router.delete('/produtos/:id', auth, produtoController.excluir);
 
-
-// Categoria
-const Categoria = require('../infra/models/Categoria');
+// ---------- Categoria ----------
 const CategoriaRepository = require('../repositories/CategoriaRepository');
 const CategoriaService = require('../services/CategoriaService');
 const CategoriaControllerFactory = require('../controllers/CategoriaController');
-
-const categoriaRepo = new CategoriaRepository(Categoria);
-const categoriaService = new CategoriaService(categoriaRepo);
-const categoriaController = CategoriaControllerFactory(categoriaService);
+const categoriaController = CategoriaControllerFactory(new CategoriaService(new CategoriaRepository(Categoria)));
 
 router.get('/categorias', categoriaController.listar);
-router.post('/categorias', categoriaController.criar);
+router.post('/categorias', auth, categoriaController.criar);
 router.get('/categorias/:id', categoriaController.buscarPorId);
-router.put('/categorias/:id', categoriaController.atualizar);
-router.delete('/categorias/:id', categoriaController.excluir);
+router.put('/categorias/:id', auth, categoriaController.atualizar);
+router.delete('/categorias/:id', auth, categoriaController.excluir);
 
-
-//Adicional
-const Adicional = require('../infra/models/Adicional');
+// ---------- Adicional ----------
 const AdicionalRepository = require('../repositories/AdicionalRepository');
 const AdicionalService = require('../services/AdicionalService');
 const AdicionalControllerFactory = require('../controllers/AdicionalController');
-
-const adicionalRepo = new AdicionalRepository(Adicional);
-const adicionalService = new AdicionalService(adicionalRepo);
-const adicionalController = AdicionalControllerFactory(adicionalService);
+const adicionalController = AdicionalControllerFactory(new AdicionalService(new AdicionalRepository(Adicional)));
 
 router.get('/adicionais', adicionalController.listar);
 router.get('/adicionais/:id', adicionalController.buscarPorId);
-router.post('/adicionais', adicionalController.criar);
-router.put('/adicionais/:id', adicionalController.atualizar);
-router.delete('/adicionais/:id', adicionalController.excluir);
+router.post('/adicionais', auth, adicionalController.criar);
+router.put('/adicionais/:id', auth, adicionalController.atualizar);
+router.delete('/adicionais/:id', auth, adicionalController.excluir);
 
-
-// Pedido
+// ---------- Pedido ----------
 const PedidoRepository = require('../repositories/PedidoRepository');
 const PedidoService = require('../services/PedidoService');
 const PedidoControllerFactory = require('../controllers/PedidoController');
+const pedidoController = PedidoControllerFactory(new PedidoService(new PedidoRepository(Pedido, ItemPedido)));
 
-const pedidoRepo = new PedidoRepository(Pedido, ItemPedido);
-const pedidoService = new PedidoService(pedidoRepo);
-const pedidoController = PedidoControllerFactory(pedidoService);
-
-router.get('/pedidos', pedidoController.listar);
-router.get('/pedidos/:id', pedidoController.buscarPorId);
-router.post('/pedidos', pedidoController.criar);
-router.put('/pedidos/:id', pedidoController.atualizar);
-router.delete('/pedidos/:id', pedidoController.deletar);
+router.get('/pedidos', auth, pedidoController.listar);
+router.get('/pedidos/:id', auth, pedidoController.buscarPorId);
+router.post('/pedidos', auth, pedidoController.criar);
+router.put('/pedidos/:id', auth, pedidoController.atualizar);
+router.delete('/pedidos/:id', auth, pedidoController.deletar);
 
 
-//Permissões
-const { Permissao } = require('../infra/models');
+// -----------Itens Pedidos-----------
+const ItemPedidoRepository = require('../repositories/ItemPedidoRepository');
+const ItemPedidoService = require('../services/ItemPedidoService');
+const ItemPedidoControllerFactory = require('../controllers/ItemPedidoController');
+
+const itemPedidoController = ItemPedidoControllerFactory(
+  new ItemPedidoService(new ItemPedidoRepository(ItemPedido))
+);
+
+router.post('/itens-pedido/lote', auth, itemPedidoController.criarEmLote);
+
+// ---------- Permissão ----------
 const PermissaoRepository = require('../repositories/PermissaoRepository');
 const PermissaoService = require('../services/PermissaoService');
 const PermissaoControllerFactory = require('../controllers/PermissaoController');
+const permissaoController = PermissaoControllerFactory(new PermissaoService(new PermissaoRepository(Permissao)));
 
-const permissaoRepo = new PermissaoRepository(Permissao);
-const permissaoService = new PermissaoService(permissaoRepo);
-const permissaoController = PermissaoControllerFactory(permissaoService);
+router.get('/permissoes', auth, permissaoController.listar);
+router.post('/permissoes', auth, permissaoController.criar);
+router.get('/permissoes/:id', auth, permissaoController.buscarPorId);
+router.put('/permissoes/:id', auth, permissaoController.atualizar);
+router.delete('/permissoes/:id', auth, permissaoController.excluir);
 
-router.get('/permissoes', permissaoController.listar);
-router.post('/permissoes', permissaoController.criar);
-router.get('/permissoes/:id', permissaoController.buscarPorId);
-router.put('/permissoes/:id', permissaoController.atualizar);
-router.delete('/permissoes/:id', permissaoController.excluir);
+// ---------- Pagamento ----------
+const PagamentoRepository = require('../repositories/PagamentoRepository');
+const PagamentoService = require('../services/PagamentoService');
+const PagamentoControllerFactory = require('../controllers/PagamentoController');
+const pagamentoController = PagamentoControllerFactory(new PagamentoService(new PagamentoRepository(Pagamento)));
 
+router.get('/pagamentos', pagamentoController.listar);
+router.post('/pagamentos', auth, pagamentoController.criar);
+router.get('/pagamentos/:id', pagamentoController.buscarPorId);
+router.put('/pagamentos/:id', auth, pagamentoController.atualizar);
+router.delete('/pagamentos/:id', auth, pagamentoController.excluir);
+
+// ---------- Log de rotas ----------
 console.log('Rotas registradas:');
 router.stack.forEach((r) => {
-  if (r.route) {
-    console.log(`${Object.keys(r.route.methods)} ${r.route.path}`);
-  }
+  if (r.route) console.log(`${Object.keys(r.route.methods)} ${r.route.path}`);
 });
-
 
 module.exports = router;
