@@ -16,20 +16,23 @@ API desenvolvida com foco em gestão de pedidos de bebidas, permitindo cadastro 
 ---
 
 ## 📁 Estrutura do Projeto
+
+```
 bebidas-api/
 ├── src/
-│ ├── controllers/ # Lógica dos endpoints
-│ ├── infra/
-│ │ ├── database.js # Conexão com o banco
-│ │ └── models/ # Modelos Sequelize
-│ ├── middlewares/ # Autenticação JWT
-│ ├── repositories/ # Acesso ao banco
-│ ├── routes/ # Rotas da aplicação
-│ ├── services/ # Regras de negócio
-│ └── app.js # Inicialização da aplicação
-├── .env.example # Variáveis de ambiente
+│   ├── controllers/     # Lógica dos endpoints
+│   ├── infra/
+│   │   ├── database.js  # Conexão com o banco
+│   │   └── models/      # Modelos Sequelize
+│   ├── middlewares/     # Autenticação JWT
+│   ├── repositories/    # Acesso ao banco
+│   ├── routes/          # Rotas da aplicação
+│   ├── services/        # Regras de negócio
+│   └── app.js           # Inicialização da aplicação
+├── .env.example         # Variáveis de ambiente
 ├── package.json
 └── README.md
+```
 
 ---
 
@@ -56,13 +59,29 @@ bebidas-api/
 ## 🛠️ Instalação
 
 1. Clone o repositório:
+
 ```bash
 git clone https://github.com/seu-usuario/bebidas-api.git
 cd bebidas-api
+```
+
+2. Instale as dependências:
+
+```bash
+npm install
+```
+
+3. Configure o `.env` com base no `.env.example`.
+
+4. Rode a aplicação:
+
+```bash
+npm run dev
+```
 
 ---
 
+## 👤 Autor
 
-🧑‍💻 Autor
-Desenvolvido por Kauã Azevedo — Engenharia de Software
-GitHub: @kauarodri90
+Desenvolvido por **Kauã Azevedo** — Engenharia de Software  
+GitHub: [@kauarodri90](https://github.com/kauarodri90)

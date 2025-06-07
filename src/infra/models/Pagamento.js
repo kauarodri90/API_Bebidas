@@ -12,5 +12,12 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'pagamentos'
   });
 
+  Pagamento.associate = (models) => {
+  Pagamento.hasMany(models.Pedido, {
+    foreignKey: 'id_pagamento',
+    as: 'pedidos',
+  });
+};
+
   return Pagamento;
 };
