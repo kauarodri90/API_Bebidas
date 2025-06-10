@@ -8,10 +8,13 @@ const ItemPedido = require('./ItemPedido')(db, DataTypes);
 const Produto = require('./Produto')(db, DataTypes);
 const Categoria = require('./Categoria')(db, DataTypes);
 const Adicional = require('./Adicional')(db, DataTypes);
-const Pagamento = require('./Pagamento')(db, DataTypes); 
+const Pagamento = require('./Pagamento')(db, DataTypes);
+const Endereco = require('./Endereco')(db, DataTypes);
+const Relatorio = require('./Relatorio')(db, DataTypes);
+const StatusPedido = require('./StatusPedido')(db, DataTypes);
 
 
-const models = { Usuario, Pedido, ItemPedido, Produto, Categoria, Adicional, Permissao, Pagamento};
+const models = { Usuario, Pedido, ItemPedido, Produto, Categoria, Adicional, Permissao, Pagamento, Endereco, Relatorio, StatusPedido};
 
 Pedido.associate?.(models);
 Permissao.associate?.(models);
@@ -21,6 +24,9 @@ Produto.associate?.(models);
 Categoria.associate?.(models);
 Adicional.associate?.(models);
 Pagamento.associate?.(models);
+Endereco.associate?.(models);
+Relatorio.associate?.(models);
+StatusPedido.associate?.(models);
 
 
 module.exports = {
@@ -33,5 +39,8 @@ module.exports = {
   Categoria,
   Adicional,
   Pagamento,
+  Endereco,
+  Relatorio,
+  StatusPedido,
   
 };

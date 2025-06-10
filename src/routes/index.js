@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const models = require('../infra/models');
-const { Pedido, ItemPedido, Usuario, Produto, Categoria, Adicional, Permissao, Pagamento } = models;
+const { Pedido, ItemPedido, Usuario, Produto, Categoria, Adicional, Permissao, Pagamento, Endereco, Relatorio, StatusPedido } = models;
 
 const auth = require('../middlewares/auth');
 
@@ -17,7 +17,7 @@ const UsuarioControllerFactory = require('../controllers/UsuarioController');
 const usuarioController = UsuarioControllerFactory(new UsuarioService(new UsuarioRepository(Usuario)));
 
 router.get('/usuarios', auth, usuarioController.listar);
-router.post('/usuarios', usuarioController.criar); // Registro aberto
+router.post('/usuarios', usuarioController.criar);
 
 // ---------- Produto ----------
 const ProdutoRepository = require('../repositories/ProdutoRepository.js');
@@ -26,7 +26,7 @@ const ProdutoControllerFactory = require('../controllers/ProdutoController');
 const produtoController = ProdutoControllerFactory(new ProdutoService(new ProdutoRepository(Produto)));
 
 router.get('/produtos', produtoController.listarTodos);
-router.post('/produtos', auth, produtoController.criar); // protegida
+router.post('/produtos', auth, produtoController.criar);
 router.get('/produtos/:id', produtoController.buscarPorId);
 router.put('/produtos/:id', auth, produtoController.atualizar);
 router.delete('/produtos/:id', auth, produtoController.excluir);
@@ -67,15 +67,11 @@ router.post('/pedidos', auth, pedidoController.criar);
 router.put('/pedidos/:id', auth, pedidoController.atualizar);
 router.delete('/pedidos/:id', auth, pedidoController.deletar);
 
-
-// -----------Itens Pedidos-----------
+// ---------- Itens do Pedido ----------
 const ItemPedidoRepository = require('../repositories/ItemPedidoRepository');
 const ItemPedidoService = require('../services/ItemPedidoService');
 const ItemPedidoControllerFactory = require('../controllers/ItemPedidoController');
-
-const itemPedidoController = ItemPedidoControllerFactory(
-  new ItemPedidoService(new ItemPedidoRepository(ItemPedido))
-);
+const itemPedidoController = ItemPedidoControllerFactory(new ItemPedidoService(new ItemPedidoRepository(ItemPedido)));
 
 router.post('/itens-pedido/lote', auth, itemPedidoController.criarEmLote);
 
@@ -102,6 +98,41 @@ router.post('/pagamentos', auth, pagamentoController.criar);
 router.get('/pagamentos/:id', pagamentoController.buscarPorId);
 router.put('/pagamentos/:id', auth, pagamentoController.atualizar);
 router.delete('/pagamentos/:id', auth, pagamentoController.excluir);
+
+// ---------- Endereço ----------
+const EnderecoRepository = require('../repositories/EnderecoRepository');
+const EnderecoService = require('../services/EnderecoService');
+const EnderecoControllerFactory = require('../controllers/EnderecoController');
+const enderecoController = EnderecoControllerFactory(new EnderecoService(new EnderecoRepository(Endereco)));
+
+router.get('/enderecos', auth, enderecoController.listar);
+router.post('/enderecos', auth, enderecoController.criar);
+router.get('/enderecos/:id', auth, enderecoController.buscarPorId);
+router.put('/enderecos/:id', auth, enderecoController.atualizar);
+router.delete('/enderecos/:id', auth, enderecoController.excluir);
+
+// ---------- Relatório ----------
+const RelatorioRepository = require('../repositories/RelatorioRepository');
+const RelatorioService = require('../services/RelatorioService');
+const RelatorioControllerFactory = require('../controllers/RelatorioController');
+const relatorioController = RelatorioControllerFactory(new RelatorioService(new RelatorioRepository(Relatorio)));
+
+router.get('/relatorios', auth, relatorioController.listar);
+router.post('/relatorios', auth, relatorioController.criar);
+router.get('/relatorios/:id', auth, relatorioController.buscarPorId);
+router.delete('/relatorios/:id', auth, relatorioController.excluir);
+
+// ---------- Status Pedido ----------
+const StatusPedidoRepository = require('../repositories/StatusPedidoRepository');
+const StatusPedidoService = require('../services/StatusPedidoService');
+const StatusPedidoControllerFactory = require('../controllers/StatusPedidoController');
+const statusPedidoController = StatusPedidoControllerFactory(new StatusPedidoService(new StatusPedidoRepository(StatusPedido)));
+
+router.get('/status-pedidos', auth, statusPedidoController.listar);
+router.post('/status-pedidos', auth, statusPedidoController.criar);
+router.get('/status-pedidos/:id', auth, statusPedidoController.buscarPorId);
+router.put('/status-pedidos/:id', auth, statusPedidoController.atualizar);
+router.delete('/status-pedidos/:id', auth, statusPedidoController.excluir);
 
 // ---------- Log de rotas ----------
 console.log('Rotas registradas:');
