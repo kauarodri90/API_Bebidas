@@ -8,11 +8,15 @@ class PedidoRepository {
   }
 
   async listarTodos() {
-    return await this.model.findAll({ include: ['itens'] });
+  return await this.model.findAll({
+    include: ['itens', 'usuario', 'pagamento', 'status', 'endereco']
+    });
   }
 
   async buscarPorId(id) {
-    return await this.model.findByPk(id, { include: ['itens'] });
+    return await this.model.findByPk(id, {
+      include: ['itens', 'usuario', 'pagamento', 'status', 'endereco']
+    });
   }
 
   async atualizar(id, dados) {

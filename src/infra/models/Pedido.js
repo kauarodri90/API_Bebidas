@@ -3,6 +3,9 @@ module.exports = (sequelize, DataTypes) => {
     data: DataTypes.DATE,
     total: DataTypes.FLOAT,
     id_usuario: DataTypes.INTEGER,
+    id_pagamento: DataTypes.INTEGER,
+    id_status: DataTypes.INTEGER,
+    id_endereco: DataTypes.INTEGER
   }, {
     tableName: 'pedidos'
   });
@@ -19,10 +22,19 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Pedido.belongsTo(models.Pagamento, {
-        foreignKey: 'id_pagamento',
-        as: 'pagamento',
+      foreignKey: 'id_pagamento',
+      as: 'pagamento'
     });
 
+    Pedido.belongsTo(models.StatusPedido, {
+      foreignKey: 'id_status',
+      as: 'status'
+    });
+
+    Pedido.belongsTo(models.Endereco, {
+      foreignKey: 'id_endereco',
+      as: 'endereco'
+    });
   };
 
   return Pedido;

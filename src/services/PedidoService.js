@@ -12,7 +12,12 @@ class PedidoService {
   }
 
   async listarPedidos() {
-    return await this.pedidoRepo.listarTodos();
+    try {
+      return await this.pedidoRepo.listarTodos();
+    } catch (err) {
+      console.error("❌ Erro em listarPedidos:", err);
+      throw err;
+    }
   }
 
   async buscarPorId(id) {

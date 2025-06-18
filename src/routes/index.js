@@ -18,6 +18,8 @@ const usuarioController = UsuarioControllerFactory(new UsuarioService(new Usuari
 
 router.get('/usuarios', auth, usuarioController.listar);
 router.post('/usuarios', usuarioController.criar);
+router.put('/usuarios/:id', auth, usuarioController.atualizar);
+router.delete('/usuarios/:id', auth, usuarioController.excluir);
 
 // ---------- Produto ----------
 const ProdutoRepository = require('../repositories/ProdutoRepository.js');
@@ -59,8 +61,13 @@ router.delete('/adicionais/:id', auth, adicionalController.excluir);
 const PedidoRepository = require('../repositories/PedidoRepository');
 const PedidoService = require('../services/PedidoService');
 const PedidoControllerFactory = require('../controllers/PedidoController');
-const pedidoController = PedidoControllerFactory(new PedidoService(new PedidoRepository(Pedido, ItemPedido)));
-
+const ItemPedidoRepository = require('../repositories/ItemPedidoRepository');
+const pedidoController = PedidoControllerFactory(
+  new PedidoService(
+    new PedidoRepository(Pedido),
+    new ItemPedidoRepository(ItemPedido)
+  )
+);
 router.get('/pedidos', auth, pedidoController.listar);
 router.get('/pedidos/:id', auth, pedidoController.buscarPorId);
 router.post('/pedidos', auth, pedidoController.criar);
@@ -68,7 +75,6 @@ router.put('/pedidos/:id', auth, pedidoController.atualizar);
 router.delete('/pedidos/:id', auth, pedidoController.deletar);
 
 // ---------- Itens do Pedido ----------
-const ItemPedidoRepository = require('../repositories/ItemPedidoRepository');
 const ItemPedidoService = require('../services/ItemPedidoService');
 const ItemPedidoControllerFactory = require('../controllers/ItemPedidoController');
 const itemPedidoController = ItemPedidoControllerFactory(new ItemPedidoService(new ItemPedidoRepository(ItemPedido)));

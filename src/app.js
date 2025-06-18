@@ -3,6 +3,9 @@ const express = require('express');
 const routes = require('./routes');
 const db = require('./infra/database');
 
+const cors = require('cors');
+app.use(cors());
+
 const app = express();
 app.use(express.json());
 app.use(routes);
@@ -21,3 +24,4 @@ db.sync().then(() => {
     console.log(`🚀 Servidor rodando na porta ${PORT}`);
   });
 });
+

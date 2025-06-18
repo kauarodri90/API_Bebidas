@@ -4,7 +4,7 @@ class ItemPedidoRepository {
   }
 
   async criarEmLote(itens, pedidoId) {
-    const itensComPedidoId = itens.map(item => ({ ...item, pedidoId }));
+    const itensComPedidoId = itens.map(item => ({ ...item, id_pedido: pedidoId }));
     return await this.model.bulkCreate(itensComPedidoId);
   }
 }
